@@ -21,7 +21,7 @@ program
   .option('--ocr-language <lang>', 'OCR language(s)', 'en')
   .option('--max-pages <n>', 'Max pages to parse', '1000')
   .option('--target-pages <pages>', 'Target pages (e.g., "1-5,10,15-20")')
-  .option('--dpi <dpi>', 'DPI for rendering', '300')
+  .option('--dpi <dpi>', 'DPI for rendering', '150')
   .option('--no-tables', 'Disable table detection')
   .option('--no-precise-bbox', 'Disable precise bounding boxes')
   .option('--skip-diagonal-text', 'Skip diagonal text')
