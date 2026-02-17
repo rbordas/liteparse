@@ -236,6 +236,11 @@ export function buildBbox(pageData: PageData, config: LiteParseConfig): Projecti
       h: item.h || item.height,
     }));
 
+    // Collect text content for content-based deduplication (normalized lowercase)
+    const existingTextContent = new Set(
+      pageData.textItems.map((item) => item.str.trim().toLowerCase()).filter((s) => s.length > 0)
+    );
+
     for (const image of imagesToProcess) {
       // Parse OCR blocks from image
       let ocrData = parseImageOcrBlocks(image);
@@ -247,6 +252,13 @@ export function buildBbox(pageData: PageData, config: LiteParseConfig): Projecti
 
       // Filter out OCR blocks that overlap with already-extracted text
       ocrData = filterOcrBlocksOverlappingWithText(ocrData, textItemBoxes);
+
+      // Filter out OCR blocks whose text content already exists in native PDF text
+      // This catches duplicates that are at different positions (e.g., watermarks, repeated headers)
+      ocrData = ocrData.filter((block) => {
+        const ocrText = block.c.trim().toLowerCase();
+        return ocrText.length > 0 && !existingTextContent.has(ocrText);
+      });
 
       const ocrParsed: OcrData[] = [];
       for (const block of ocrData) {

@@ -239,8 +239,20 @@ export class LiteParse {
 
           // Convert OCR results to text items and add to page
           if (ocrResults.length > 0) {
+            // Collect existing text content for content-based deduplication
+            const existingTextContent = new Set(
+              page.textItems
+                .map((item: { str: string }) => item.str.trim().toLowerCase())
+                .filter((s: string) => s.length > 0)
+            );
+
             const ocrTextItems = ocrResults
               .filter((r) => r.confidence > 0.1) // Filter low confidence
+              .filter((r) => {
+                // Filter out OCR text that already exists in native PDF text
+                const ocrText = r.text.trim().toLowerCase();
+                return ocrText.length > 0 && !existingTextContent.has(ocrText);
+              })
               .map((r) => ({
                 str: r.text,
                 x: r.bbox[0],
