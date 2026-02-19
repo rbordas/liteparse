@@ -26,6 +26,9 @@ export class TesseractEngine implements OcrEngine {
     // Create worker pool
     for (let i = 0; i < this.concurrency; i++) {
       const worker = await createWorker(language, 1);
+      if (!worker) {
+        throw new Error("Tesseract worker not initialized");
+      }
       this.workers.push(worker);
       this.scheduler.addWorker(worker);
     }
