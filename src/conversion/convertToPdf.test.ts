@@ -25,8 +25,7 @@ vi.mock("fs", async () => {
       open: vi.fn(async () => {
         return mockFd;
       }),
-      // eslint-disable-next-line  @typescript-eslint/no-unused-vars
-      access: vi.fn(async (path: string, mode?: number) => {
+      access: vi.fn(async (path: string, _mode?: number) => {
         console.log(path);
         const toErrorPath = [
           "/Applications/LibreOffice.app/Contents/MacOS/soffice",
