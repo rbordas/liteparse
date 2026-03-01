@@ -819,6 +819,7 @@ export function bboxToLine(
 
   // sort lines by y
   lines.sort((a, b) => a[0].y - b[0].y);
+
   // merge 'words'
   const mergeThreshold = 1;
   for (const line of lines) {
@@ -855,7 +856,11 @@ export function bboxToLine(
         ) {
           // merge if space between this word and previous is less than average
           // character width (using previous word font size)
+
+          // Now extend the width
           previousLine.w = currentLine.x + currentLine.w - previousLine.x;
+
+          // Add space between merged items unless the previous already ends with space
           if (!previousLine.str.endsWith(" ")) {
             previousLine.str += " ";
             previousLine.strLength += 1;
@@ -1175,21 +1180,18 @@ export function projectToGrid(
         // should we add a space between the two bbox?
         // TODO RTL
         if (prevBbox && bbox.x - (prevBbox.x + prevBbox.w) > spaceThreshold) {
-          // add a space
-          bbox.shouldSpace = 1;
           const xDelta = bbox.x - (prevBbox.x + prevBbox.w);
           const prevCharWidth = prevBbox.w / prevBbox.strLength;
+
+          // add a space
+          bbox.shouldSpace = 1;
+
           if (xDelta > prevCharWidth * 2) {
-            // Check if both items are clearly within the same column
-            // Use start x-coordinate for left column check, not x + w, to handle
-            // items that extend near the column boundary
-            const pageMidpoint = page.width * 0.5;
-            const prevInLeftColumn = prevBbox.x < pageMidpoint - 30;
-            const bboxInLeftColumn = bbox.x < pageMidpoint - 30;
-            const prevInRightColumn = prevBbox.x > pageMidpoint + 10;
-            const bboxInRightColumn = bbox.x > pageMidpoint + 10;
-            const bothInSameColumn =
-              (prevInLeftColumn && bboxInLeftColumn) || (prevInRightColumn && bboxInRightColumn);
+            // Check if both items are in the same column based on gap size
+            // If gap is less than 10% of page width, treat as same column
+            // This works for any number of columns
+            const columnGapThreshold = page.width * 0.1;
+            const bothInSameColumn = xDelta < columnGapThreshold;
 
             // insert column spacing if any of:
             // - gap is more than an approximate tab (8x average char width)
@@ -1289,15 +1291,9 @@ export function projectToGrid(
           if (!bbox.forceUnsnapped) {
             const floatingAnchor = forwardAnchors.floating[Math.round(bbox.x)];
             if (floatingAnchor && targetX < floatingAnchor) {
-              // Only apply floating anchor alignment if it doesn't create excessive gaps
-              // For items within a single column (not near the page midpoint), limit the gap
-              const pageMidpoint = page.width * 0.5;
-              const isInLeftColumn = bbox.x + bbox.w < pageMidpoint - 20;
-              const isInRightColumn = bbox.x > pageMidpoint + 20;
-              const isClearlyInOneColumn = isInLeftColumn || isInRightColumn;
-
               // Limit floating anchor adjustment to avoid excessive gaps in justified text
-              const maxFloatingGap = isClearlyInOneColumn ? 4 : floatingAnchor;
+              // Use a small max gap to prevent large spacing within columns
+              const maxFloatingGap = 4;
               const adjustedAnchor = Math.min(floatingAnchor, targetX + maxFloatingGap);
               if (adjustedAnchor > targetX) {
                 targetX = adjustedAnchor;
