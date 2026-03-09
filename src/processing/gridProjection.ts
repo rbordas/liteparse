@@ -909,8 +909,7 @@ export function bboxToLine(
           i--;
         } else if (
           !bothAreNumbers &&
-          currentLine.x - previousLine.x - previousLine.w <
-            previousLine.w / previousLine.strLength
+          currentLine.x - previousLine.x - previousLine.w < previousLine.w / previousLine.strLength
         ) {
           // merge if space between this word and previous is less than average
           // character width (using previous word font size)

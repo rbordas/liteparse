@@ -13,7 +13,7 @@ export function cleanOcrTableArtifacts(text: string): string {
   // These typically appear at the start or end of cell content
   const borderArtifacts = /^[|[\](){}]+|[|[\](){}]+$/g;
 
-  let cleaned = text.trim();
+  const cleaned = text.trim();
 
   // Only clean if the core content looks like a number or short text
   // This avoids incorrectly stripping brackets from actual content like "(note)"
