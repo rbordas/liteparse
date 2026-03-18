@@ -8,7 +8,7 @@ These servers allow you to use alternative OCR engines instead of the built-in T
 
 | Feature | Tesseract.js (built-in) | EasyOCR | PaddleOCR |
 |---------|-------------------------|---------|-----------|
-| Setup | Zero (included) | Docker | Docker |
+| Setup | Zero (included) | uv | uv |
 | Speed | Moderate | Moderate | Fast (2-3x) |
 | Accuracy (Latin) | Good | Good | Good |
 | Accuracy (CJK) | Fair | Good | Excellent |
@@ -39,13 +39,11 @@ Flask server wrapping PaddleOCR library.
 ```bash
 # Start EasyOCR server
 cd ocr/easyocr
-docker build -t liteparse-easyocr .
-docker run -p 8828:8828 liteparse-easyocr
+uv run server.py
 
 # OR start PaddleOCR server
 cd ocr/paddleocr
-docker build -t liteparse-paddleocr .
-docker run -p 8829:8829 liteparse-paddleocr
+uv run server.py
 ```
 
 Then use with LiteParse:
