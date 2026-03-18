@@ -4,21 +4,9 @@ This is a simple Flask server that wraps EasyOCR to conform to the LiteParse OCR
 
 ## Build and Run
 
-**With uv**
-
 ```bash
 # install and run (in one command)
-uv run python3 server.py
-```
-
-**With Docker**
-
-```bash
-# Build Docker image
-docker build -t liteparse-easyocr .
-
-# Run container
-docker run -p 8828:8828 liteparse-easyocr
+uv run server.py
 ```
 
 ## Usage

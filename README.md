@@ -4,15 +4,15 @@
 [![npm version](https://img.shields.io/npm/v/@llamaindex/liteparse.svg)](https://www.npmjs.com/package/@llamaindex/liteparse)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Open-source PDF parsing with spatial text extraction, no LLMs and cloud dependencies.
+Open-source PDF parsing with spatial text parsing, no LLMs and cloud dependencies.
 
 ## Overview
 
-LiteParse is a standalone OSS PDF parsing tool focused exclusively on **fast and light** parsing. It provides high-quality spatial text extraction with bounding boxes, without proprietary LLM features or cloud dependencies. Everything runs locally on your machine. 
+LiteParse is a standalone OSS PDF parsing tool focused exclusively on **fast and light** parsing. It provides high-quality spatial text parsing with bounding boxes, without proprietary LLM features or cloud dependencies. Everything runs locally on your machine. 
 
 ### Features
 
-- **Fast Text Extraction**: Spatial text extraction using PDF.js
+- **Fast Text Parsing**: Spatial text parsing using PDF.js
 - **Flexible OCR System**:
   - **Built-in**: Tesseract.js (zero setup, works out of the box!)
   - **HTTP Servers**: Plug in any OCR server (EasyOCR, PaddleOCR, custom)
@@ -96,13 +96,13 @@ Screenshots are essential for LLM agents to extract visual information that text
 lit screenshot document.pdf -o ./screenshots
 
 # Screenshot specific pages
-lit screenshot document.pdf --pages "1,3,5" -o ./screenshots
+lit screenshot document.pdf --target-pages "1,3,5" -o ./screenshots
 
 # Custom DPI
 lit screenshot document.pdf --dpi 300 -o ./screenshots
 
 # Screenshot page range
-lit screenshot document.pdf --pages "1-10" -o ./screenshots
+lit screenshot document.pdf --target-pages "1-10" -o ./screenshots
 ```
 
 ### Library Usage
@@ -144,7 +144,6 @@ Options:
   --target-pages <pages>  Target pages (e.g., "1-5,10,15-20")
   --dpi <dpi>             DPI for rendering (default: "150")
   --no-precise-bbox       Disable precise bounding boxes
-  --skip-diagonal-text    Skip diagonal text
   --preserve-small-text   Preserve very small text
   --config <file>         Config file (JSON)
   -q, --quiet             Suppress progress output
@@ -185,7 +184,7 @@ Generate screenshots of PDF pages
 
 Options:
   -o, --output-dir <dir>  Output directory for screenshots (default: "./screenshots")
-  --pages <pages>         Page numbers to screenshot (e.g., "1,3,5" or "1-5")
+  --target-pages <pages>  Page numbers to screenshot (e.g., "1,3,5" or "1-5")
   --dpi <dpi>             DPI for rendering (default: "150")
   --format <format>       Image format: png|jpg (default: "png")
   --config <file>         Config file (JSON)
@@ -283,10 +282,7 @@ Create a `liteparse.config.json` file:
   "maxPages": 1000,
   "dpi": 150,
   "outputFormat": "json",
-  "includeImages": true,
-  "includeCharts": true,
   "preciseBoundingBox": true,
-  "skipDiagonalText": false,
   "preserveVerySmallText": false
 }
 ```
